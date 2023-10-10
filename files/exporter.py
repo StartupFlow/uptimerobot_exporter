@@ -73,7 +73,7 @@ def format_prometheus(data):
             )
         if item.get('custom_uptime_ratio'):
             uptime_ratios = item.get('custom_uptime_ratio').split('-')
-            result += 'uptimerobot_uptime_ratio{{name="{}",type="{}",url="{}",uptime_7="{}",uptime_24="{}",uptime_30="{}",uptime_90="{}"}} 0\n'.format(
+            result += 'uptimerobot_uptime_ratio{{name="{}",type="{}",url="{}",uptime_1d="{}",uptime_7d="{}",uptime_30d="{}",uptime_90d="{}"}} 0\n'.format(
                 item.get('friendly_name'),
                 item.get('type'),
                 item.get('url'),
