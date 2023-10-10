@@ -19,6 +19,7 @@ def _fetch_paginated(offset, api_key):
         'format': 'json',
         'response_times': 1,
         'response_times_limit': 1,
+        'custom_uptime_ratios': '1-7-30-90',
         'offset': offset,
     }
     return requests.post(
@@ -69,6 +70,17 @@ def format_prometheus(data):
                 item.get('type'),
                 item.get('url'),
                 item.get('response_times').pop().get('value'),
+            )
+        if item.get('custom_uptime_ratio'):
+            uptime_ratios = item.get('custom_uptime_ratio').split('-')
+            result += 'uptimerobot_uptime_ratio{{name="{}",type="{}",url="{}",uptime_7="{}",uptime_24="{}",uptime_30="{}",uptime_90="{}"}} 0\n'.format(
+                item.get('friendly_name'),
+                item.get('type'),
+                item.get('url'),
+                uptime_ratios[0],
+                uptime_ratios[1],
+                uptime_ratios[2],
+                uptime_ratios[3],
             )
     return result
 
