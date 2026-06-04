@@ -135,21 +135,22 @@ def format_prometheus_psp(data):
 
 class ReqHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
-        answer = fetch_data(api_key)
-        accountdetails = fetch_accountdetails(api_key)
-        psp = fetch_psp(api_key)
-        self.send_response(200)
-        self.send_header("Content-type", "text/plain")
-        self.end_headers()
-        self.wfile.write(
-            format_prometheus(answer.get('monitors')).encode('utf-8')
-        )
-        self.wfile.write(
-            format_prometheus_accountdetails(accountdetails.get('account')).encode('utf-8')
-        )
-        self.wfile.write(
-            format_prometheus_psp(psp.get('psps')).encode('utf-8')
-        )
+        try:
+            answer = fetch_data(api_key)
+            accountdetails = fetch_accountdetails(api_key)
+            psp = fetch_psp(api_key)
+            output = (
+                format_prometheus(answer.get('monitors'))
+                + format_prometheus_accountdetails(accountdetails.get('account'))
+                + format_prometheus_psp(psp.get('psps'))
+            )
+            self.send_response(200)
+            self.send_header("Content-type", "text/plain")
+            self.end_headers()
+            self.wfile.write(output.encode('utf-8'))
+        except BrokenPipeError:
+            pass
+
 
 
 if __name__ == '__main__':
